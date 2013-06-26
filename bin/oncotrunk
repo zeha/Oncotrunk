@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
-#$LOAD_PATH.unshift File.expand_path('./lib')
 require 'oncotrunk'
+require 'oncotrunk/cli'
+require 'oncotrunk/with_friendly_errors'
 
-Oncotrunk::Client.new.start!
+Oncotrunk.with_friendly_errors { Oncotrunk::CLI.start(ARGV) }

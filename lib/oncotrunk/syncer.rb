@@ -16,12 +16,12 @@ module Oncotrunk
       tries = 0
       while tries < max_tries
         if run_unison(local, remote)
-          puts "Sync complete"
+          Oncotrunk.ui.info "Sync complete"
           return
         end
         tries += 1
       end
-      raise "Unison did not complete after #{max_tries} tries"
+      raise SyncFailedError, "Unison did not complete after #{max_tries} tries"
     end
 
     def run_unison(local, remote)
@@ -46,7 +46,7 @@ module Oncotrunk
         # update failed
         return false
       else
-        raise "Unhandled unison exit code #{$?.exitstatus}"
+        raise SyncFailedError, "Unhandled unison exit code #{$?.exitstatus}"
       end
     end
 

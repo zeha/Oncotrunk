@@ -5,6 +5,8 @@ require 'xmpp4r/pubsub'
 module Oncotrunk
   class Client
     def initialize(settings = nil)
+      Oncotrunk.ui.info "Oncotrunk starting ..."
+
       @settings = settings
       @settings ||= Oncotrunk::Settings.new
       @settings.ensure_config
@@ -49,7 +51,7 @@ module Oncotrunk
         publish("file_change", filename)
       end
 
-      puts "Watching directory #{@local_path} ..."
+      Oncotrunk.ui.info "Watching directory #{@local_path} ..."
     end
 
     def register_pubsub
@@ -95,8 +97,7 @@ module Oncotrunk
       sync
     end
 
-    def start!
-      puts "Oncotrunk starting..."
+    def connect
       # initial sync before we register filesystem hooks
       sync
       # register event sources
@@ -106,5 +107,9 @@ module Oncotrunk
       publish("restarted", "")
       @watcher.run!
     end
+
+    def run!
+    end
+
   end
 end

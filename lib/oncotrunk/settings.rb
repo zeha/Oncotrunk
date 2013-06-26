@@ -38,8 +38,7 @@ module Oncotrunk
         File.open(@path, 'w') do |f|
           f.write YAML.dump(defaults)
         end
-        puts "A new config file has been created for you in #{@path}. Please edit and restart."
-        exit 1
+        raise ConfigCreatedError, "A new config file has been created for you in #{@path}. Please edit and restart."
       end
       ensure_setting_present 'jabber.jid'
       ensure_setting_present 'jabber.password'
@@ -48,10 +47,11 @@ module Oncotrunk
       ensure_setting_present 'pubsub.server'
     end
 
+    private
+
     def ensure_setting_present(key)
       if @settings[key].nil? || @settings[key].empty?
-        puts "Please edit the config file in #{@path} and set \"#{key}\"."
-        exit 1
+        raise ConfigBrokenError, "Please edit the config file in #{@path} and set \"#{key}\"."
       end
     end
   end
