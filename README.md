@@ -20,14 +20,14 @@ Install globally:
 
 Start once to create a configfile:
 
-    $ oncotrunk
+    $ oncotrunk start
     A new config file has been created for you in /home/ch/.config/Oncotrunk/settings.yml. Please edit and restart.
 
 Edit the mentioned file.
 
 Start again, preferably in a screen or nohup:
 
-    $ screen oncotrunk
+    $ screen oncotrunk start
 
 (In the future, this should detach from your terminal.)
 
