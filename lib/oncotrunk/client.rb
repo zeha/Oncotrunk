@@ -43,8 +43,8 @@ module Oncotrunk
       @pubsub.publish_item_to(@node, item)
     end
 
-    def sync
-      @syncer.sync @local_path, @remote_path
+    def sync(path=nil)
+      @syncer.sync @local_path, @remote_path, path
     end
 
     def register_watches
@@ -125,7 +125,7 @@ module Oncotrunk
         end
       end
       unless @changed_paths.empty?
-        sync
+        sync(@changed_paths)
       end
     end
 

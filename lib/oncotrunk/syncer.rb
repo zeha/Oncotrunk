@@ -10,12 +10,12 @@ module Oncotrunk
       end
     end
 
-    def sync(local, remote)
+    def sync(local, remote, path=nil)
       ensure_profile
       max_tries = 10
       tries = 0
       while tries < max_tries
-        if run_unison(local, remote)
+        if run_unison(local, remote, path)
           Oncotrunk.ui.info "Sync complete"
           return
         end
@@ -24,10 +24,16 @@ module Oncotrunk
       raise SyncFailedError, "Unison did not complete after #{max_tries} tries"
     end
 
-    def run_unison(local, remote)
+    def run_unison(local, remote, path=nil)
       program = "unison"
-      args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty"]
-      puts [program, *args].join(" ")
+      args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", "-exclude", ".oncotrunk", "-sortbysize"]
+      unless path.nil?
+        Oncotrunk.ui.info "Syncing paths #{path.inspect}"
+        path.each do |p|
+          args << "-path"
+          args << p
+        end
+      end
       options = {:in => "/dev/null", 2=>1}
       pid = POSIX::Spawn::spawn(program, @profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", options)
       Process.waitpid(pid)
