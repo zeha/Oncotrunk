@@ -24,9 +24,11 @@ module Oncotrunk
       raise SyncFailedError, "Unison did not complete after #{max_tries} tries"
     end
 
+    private
+
     def run_unison(local, remote, path=nil)
       program = "unison"
-      args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", "-ignore", "Path #{Oncotrunk.cachedir_name}", "-sortbysize"]
+      args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", "-ignore", "Path #{Oncotrunk.cachedir_name}", "-sortbysize", "-terse"]
 
       Oncotrunk.ui.debug "#{program} #{args.join(" ")}"
 
