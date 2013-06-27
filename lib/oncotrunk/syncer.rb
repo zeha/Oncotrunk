@@ -27,16 +27,13 @@ module Oncotrunk
     def run_unison(local, remote, path=nil)
       program = "unison"
       args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", "-exclude", ".oncotrunk", "-sortbysize"]
-      unless path.nil?
-        Oncotrunk.ui.info "Syncing paths #{path.inspect}"
-        path.each do |p|
-          args << "-path"
-          args << p
-        end
-      end
-      options = {:in => "/dev/null", 2=>1}
-      pid = POSIX::Spawn::spawn(program, @profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", options)
+
+      r,w = IO.pipe
+      options = {:in => "/dev/null", 2=>1, :out => w}
+      pid = POSIX::Spawn::spawn(program, *args, options)
+      w.close
       Process.waitpid(pid)
+      Oncotrunk.ui.info "unison: #{r.read}"
 
       case $?.exitstatus
       when 0
