@@ -86,7 +86,7 @@ module Oncotrunk
       end
 
       def handle(level, msg)
-        @syslog.info "%s", "#{level}: #{msg}" if visible?(level)
+        @syslog.notice "%s", "#{level}: #{msg}" if visible?(level)
       end
 
     end
