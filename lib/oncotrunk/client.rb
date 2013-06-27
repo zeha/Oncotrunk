@@ -52,10 +52,14 @@ module Oncotrunk
     end
 
     def register_pubsub
-      @jabber_client = Jabber::Client.new(Jabber::JID.new(@settings['jabber.jid'] + '/' + @myinstance))
-      @jabber_client.connect
-      @jabber_client.auth(@settings['jabber.password'])
-      @jabber_client.send(Jabber::Presence.new.set_type(:available))
+      begin
+        @jabber_client = Jabber::Client.new(Jabber::JID.new(@settings['jabber.jid'] + '/' + @myinstance))
+        @jabber_client.connect
+        @jabber_client.auth(@settings['jabber.password'])
+        @jabber_client.send(Jabber::Presence.new.set_type(:available))
+      rescue StandardError => e
+        raise JabberError, "Jabber: #{e.message}"
+      end
 
       @pubsub = Jabber::PubSub::ServiceHelper.new(@jabber_client, @service)
       begin
