@@ -7,13 +7,23 @@ Caveats:
 - Requires unison to do the actual work.
 - Requires a jabber account on a server with a pubsub server.
 - Linux and OS X only until somebody implements Oncotrunk::Watchers::... for further platforms.
-- Requires a server to sync to (say, public reachable ssh server).
+- Requires a server to sync to (say, public reachable ssh server). May also require unison there.
 
 ## Installation
 
 Install globally:
 
     $ gem install oncotrunk
+
+Install unison:
+
+Debian/Ubuntu:
+
+    $ apt-get install unison
+
+OS X:
+
+    $ brew install unison
 
 ## Usage
 
