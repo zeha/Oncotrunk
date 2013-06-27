@@ -25,6 +25,8 @@ module Oncotrunk
       @myinstance = hostname + '_' + (rand()*20000000).to_i.to_s
 
       @pending_events = []
+      @changed_paths = []
+      @locally_changed = []
     end
 
     def publish(event_type, payload)
@@ -83,6 +85,7 @@ module Oncotrunk
 
     def on_local_file_change(filename)
       @changed_paths << filename
+      @locally_changed << filename
     end
 
     def on_remote_file_change(filename)
@@ -94,7 +97,6 @@ module Oncotrunk
     end
 
     def handle_events
-      @changed_paths = []
       @pending_events.uniq!
       while not @pending_events.empty? do
         event = @pending_events.shift
@@ -110,7 +112,12 @@ module Oncotrunk
         end
       end
       unless @changed_paths.empty?
-        sync(@changed_paths)
+        changed_paths = @changed_paths.dup
+        @changed_paths = []
+        sync @changed_paths
+      end
+      while p = @locally_changed.shift do
+        publish "file_change", p
       end
     end
 
