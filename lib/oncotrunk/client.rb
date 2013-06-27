@@ -99,13 +99,9 @@ module Oncotrunk
       # initial sync before we register filesystem hooks
       sync
       # register event sources
-      register_watches
       register_pubsub
       # tell everybody else that we're alive now (and that files may have changed because of that)
       publish("restarted", "")
-      Thread.new do
-        @watcher.run!
-      end
     end
 
     def handle_events
@@ -130,6 +126,10 @@ module Oncotrunk
     end
 
     def run!
+      register_watches
+      Thread.new do
+        @watcher.run!
+      end
       EventMachine.run do
         EventMachine.add_periodic_timer(1) do
           handle_events
