@@ -6,7 +6,6 @@ Caveats:
 
 - Requires unison to do the actual work.
 - Requires a jabber account on a server with a pubsub server.
-- "daemon" is not really a daemon.
 - Linux and OS X only until somebody implements Oncotrunk::Watchers::... for further platforms.
 - Requires a server to sync to (say, public reachable ssh server).
 
@@ -25,11 +24,12 @@ Start once to create a configfile:
 
 Edit the mentioned file.
 
-Start again, preferably in a screen or nohup:
+Start again:
 
     $ screen oncotrunk start
 
-(In the future, this should detach from your terminal.)
+Oncotrunk will now register itself as a PubSub publisher and subscriber, and watch the local directory for changes.
+You should now install Oncotrunk on a second machine (say, your laptop or the remote server) as well.
 
 
 ## Contributing
