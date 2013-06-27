@@ -8,9 +8,10 @@ module Oncotrunk
     Oncotrunk.ui.error "\nQuitting..."
     exit 1
   rescue SystemExit => e
-    exit e.status_code
+    exit e.status
   rescue Exception => e
     Oncotrunk.ui.error "Oncotrunk crashed!"
+    Oncotrunk.ui.trace e
     raise e
   end
 end
