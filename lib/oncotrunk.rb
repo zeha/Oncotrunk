@@ -41,6 +41,15 @@ module Oncotrunk
     def settings
       @settings ||= Settings.new
     end
+
+    def cachedir_name
+      ".oncotrunk"
+    end
+
+    def cachedir_path
+      File.join(File.expand_path(Oncotrunk.settings['local']), Oncotrunk.cachedir_name)
+    end
+
   end
 
 end

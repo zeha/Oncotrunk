@@ -26,7 +26,9 @@ module Oncotrunk
 
     def run_unison(local, remote, path=nil)
       program = "unison"
-      args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", "-exclude", ".oncotrunk", "-sortbysize"]
+      args = [@profile, "-root", local, "-root", remote, "-batch", "-auto", "-dumbtty", "-ignore", "Path #{Oncotrunk.cachedir_name}", "-sortbysize"]
+
+      Oncotrunk.ui.debug "#{program} #{args.join(" ")}"
 
       r,w = IO.pipe
       options = {:in => "/dev/null", 2=>1, :out => w}
