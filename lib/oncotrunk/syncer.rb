@@ -32,10 +32,15 @@ module Oncotrunk
 
       r,w = IO.pipe
       options = {:in => "/dev/null", 2=>1, :out => w}
-      pid = POSIX::Spawn::spawn(program, *args, options)
+      if RUBY_VERSION.include?("1.8.")
+        pid = POSIX::Spawn::spawn(program, *args, options)
+      else
+        pid = Process.spawn(program, *args, options)
+      end
       w.close
       Process.waitpid(pid)
       Oncotrunk.ui.info "unison: #{r.read}"
+      r.close
 
       case $?.exitstatus
       when 0

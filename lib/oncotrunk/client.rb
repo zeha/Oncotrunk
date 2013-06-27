@@ -25,13 +25,6 @@ module Oncotrunk
       @myinstance = hostname + '_' + (rand()*20000000).to_i.to_s
 
       @pending_events = []
-
-      # try connecting, but don't keep this Jabber instance.
-      # before run!, we might get daemonized (i.e. forked, and the jabber thread will be gone then)
-      jabber_client = Jabber::Client.new(Jabber::JID.new(@settings['jabber.jid'] + '/' + @myinstance))
-      jabber_client.connect
-      jabber_client.auth(@settings['jabber.password'])
-      jabber_client.close
     end
 
     def publish(event_type, payload)
@@ -133,11 +126,13 @@ module Oncotrunk
       Thread.new do
         @watcher.run!
       end
+
       EventMachine.run do
         EventMachine.add_periodic_timer(1) do
           handle_events
         end
       end
+      Oncotrunk.ui.info "Exiting"
     end
 
   end
