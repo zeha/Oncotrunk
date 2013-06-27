@@ -6,8 +6,6 @@ require 'eventmachine'
 module Oncotrunk
   class Client
     def initialize(settings = nil)
-      Oncotrunk.ui.info "Oncotrunk starting ..."
-
       @settings = settings
       @settings ||= Oncotrunk::Settings.new
       @settings.ensure_config
@@ -28,10 +26,12 @@ module Oncotrunk
 
       @pending_events = []
 
-      @jabber_client = Jabber::Client.new(Jabber::JID.new(@settings['jabber.jid'] + '/' + @myinstance))
-      @jabber_client.connect
-      @jabber_client.auth(@settings['jabber.password'])
-      @jabber_client.send(Jabber::Presence.new.set_type(:available))
+      # try connecting, but don't keep this Jabber instance.
+      # before run!, we might get daemonized (i.e. forked, and the jabber thread will be gone then)
+      jabber_client = Jabber::Client.new(Jabber::JID.new(@settings['jabber.jid'] + '/' + @myinstance))
+      jabber_client.connect
+      jabber_client.auth(@settings['jabber.password'])
+      jabber_client.close
     end
 
     def publish(event_type, payload)
@@ -57,6 +57,11 @@ module Oncotrunk
     end
 
     def register_pubsub
+      @jabber_client = Jabber::Client.new(Jabber::JID.new(@settings['jabber.jid'] + '/' + @myinstance))
+      @jabber_client.connect
+      @jabber_client.auth(@settings['jabber.password'])
+      @jabber_client.send(Jabber::Presence.new.set_type(:available))
+
       @pubsub = Jabber::PubSub::ServiceHelper.new(@jabber_client, @service)
       begin
         @pubsub.subscribe_to(@node)
@@ -95,15 +100,6 @@ module Oncotrunk
       sync
     end
 
-    def connect
-      # initial sync before we register filesystem hooks
-      sync
-      # register event sources
-      register_pubsub
-      # tell everybody else that we're alive now (and that files may have changed because of that)
-      publish("restarted", "")
-    end
-
     def handle_events
       @changed_paths = []
       @pending_events.uniq!
@@ -126,7 +122,14 @@ module Oncotrunk
     end
 
     def run!
+      # initial sync before we register filesystem hooks
+      sync
+      # register event sources
+      register_pubsub
+      # tell everybody else that we're alive now (and that files may have changed because of that)
+      publish("restarted", "")
       register_watches
+
       Thread.new do
         @watcher.run!
       end

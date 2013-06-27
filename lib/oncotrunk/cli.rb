@@ -19,10 +19,10 @@ module Oncotrunk
 
     desc "start", "start syncing daemon"
     def start(foreground=false)
-      @client = Oncotrunk::Client.new
-      @client.connect
+      Oncotrunk.ui.info "Oncotrunk starting ..."
 
-      Oncotrunk.ui.info "Backgrounding..."
+      @client = Oncotrunk::Client.new
+
       FileUtils.mkdir_p daemons_opts[:dir]
 
       opts = daemons_opts.merge(:ontop => foreground)
