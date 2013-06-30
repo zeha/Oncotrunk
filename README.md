@@ -4,7 +4,8 @@ PubSub based file syncing daemon. (Really: directory watcher.)
 
 Caveats:
 
-- Linux and OS X only until somebody implements Oncotrunk::Watchers::... for further platforms.
+- Linux and OS X only until somebody implements Oncotrunk::Watchers::... for further platforms. (see issue #1)
+- OS X: the system supplied Ruby is too old (see issue #4)
 
 ## What you need
 
