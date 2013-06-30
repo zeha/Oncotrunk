@@ -1,13 +1,16 @@
 # Oncotrunk
 
-PubSub based file syncing daemon.
+PubSub based file syncing daemon. (Really: directory watcher.)
 
 Caveats:
 
-- Requires unison to do the actual work.
-- Requires a jabber account on a server with a pubsub server.
 - Linux and OS X only until somebody implements Oncotrunk::Watchers::... for further platforms.
-- Requires a server to sync to (say, public reachable ssh server). May also require unison there.
+
+## What you need
+
+* Jabber Server with pubsub (events only)
+* Server for file storage (SSH, must install unison there)
+* Clients (install oncotrunk and unison on them)
 
 ## Installation
 
