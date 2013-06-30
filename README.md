@@ -10,7 +10,7 @@ Caveats:
 ## What you need
 
 * Jabber Server with pubsub (events only)
-* Server for file storage (SSH, must install unison there)
+* Server for file storage (SSH with keys, must install unison there)
 * Clients (install oncotrunk and unison on them)
 
 ## Installation
@@ -45,6 +45,15 @@ Start again:
 Oncotrunk will now register itself as a PubSub publisher and subscriber, and watch the local directory for changes.
 You should now install Oncotrunk on a second machine (say, your laptop or the remote server) as well.
 
+## How this works
+
+Oncotrunk watches the set directory for changes, and calls unison when needed.
+It also publishes the change over Jabber so that other running Oncotrunk
+instances can download the changed files (by calling unison).
+
+Because Oncotrunk starts unison in the background, unison must be able to
+login to your storage server without password prompts (SSH key in agent
+works fine.)
 
 ## Contributing
 
