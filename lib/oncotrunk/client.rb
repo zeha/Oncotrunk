@@ -2,6 +2,7 @@ require 'socket'
 require 'xmpp4r'
 require 'xmpp4r/pubsub'
 require 'eventmachine'
+require 'lockfile'
 
 module Oncotrunk
   class Client
@@ -17,8 +18,11 @@ module Oncotrunk
 
       if @settings['debug'] == 1
         Jabber::debug = true
+        Lockfile.debug = true
       end
 
+      @lockfile = Lockfile.new File.join(Oncotrunk.cachedir_path, 'lock'), :retries => 1, :refresh => 120, :max_age => 300, :suspend => 240
+      @lockfile.lock
       @syncer = Oncotrunk::Syncer.new
 
       hostname = Socket.gethostname
@@ -144,6 +148,7 @@ module Oncotrunk
         end
       end
       Oncotrunk.ui.info "Exiting"
+      @lockfile.unlock
     end
 
   end
